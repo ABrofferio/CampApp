@@ -1,0 +1,31 @@
+/*Campground page*/
+/*adding flex to the grid to make it more flexible so it adapts to the fact that some grid items have different heights*/
+.row{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.img-thumbnail{
+    margin-bottom: 5%;
+}
+
+img{
+    height: 100%;
+    width: 100%;
+}
+
+/*New page*/
+
+.newCampForm{
+    width: 30%;
+    margin: auto;
+}
+hey: flex;
+    flex-wrap: wrap;
+}2{
+    text-align: center;
+}
+
+.newCampFormInput{
+    margin-bottom: 2%;
+}

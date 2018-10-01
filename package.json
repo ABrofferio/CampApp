@@ -1,0 +1,17 @@
+{
+  "name": "campapp",
+  "version": "1.0.0",
+  "description": "A Fake Campsite Search application using Node, Express and MongoDb",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "aja brofferio",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.17"
+  }
+}

@@ -1,0 +1,14 @@
+<% include partials/header %>
+<div class="container">
+<h2>Search for campgrounds </h2>
+<div class="newCampForm">
+    <form action="/campgrounds" method="POST">
+        <input type="text" class="form-control newCampFormInput" name="campingSpotName" placeholder="Enter a campsite name">
+        <input type="text" class="form-control newCampFormInput" name="campingSpotImage" placeholder="Enter a campsite image">
+        <input type="text" class="form-control newCampFormInput" name="campingSpotDescription" placeholder="Enter a campsite description">
+        <input type="submit" class="btn btn-dark btn-block newCampFormInput">
+    </form>
+    <a href="/campgrounds">Return to Campgrounds</a>
+</div>
+</div>
+<%include partials/footer %>
