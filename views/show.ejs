@@ -1,5 +1,13 @@
 <% include partials/header %>
-<h1>THis is the show template</h1>
+<h1>See what visitors of <%=campground.campgroundName%> have to say.</h1>
+<div class="showCampground">
+<img src="<%=campground.campgroundImage%>">
+</div>
 <p><%=campground.campgroundDescription%></p>
+<% for(i=0;i<campground.comments.length;i++){ %>
+	<p><%=campground.comments[i].author%>: <%=campground.comments[i].text%></p>
+
+
+<% } %>
 
 <% include partials/footer %>

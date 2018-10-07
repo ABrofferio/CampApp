@@ -1,26 +1,20 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
-var mongoose = require("mongoose");
+var express = require("express"),
+	app		= express(),
+	bodyParser 	= require("body-parser"),
+	mongoose 	= require("mongoose"),
+	Campground 	= require("./models/campground"), //creating the schema and importing the model
+	seedDB  	=require("./seed");
+
+seedDB();
 
 mongoose.connect("mongodb://localhost/camp_app", { useNewUrlParser: true });
 
 
 app.use(express.static("public"));
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
-//creating the schema for the collection in the database
-var campgroundSchema = new mongoose.Schema({
-    campgroundName: String,
-    campgroundImage: String,
-    campgroundDescription: String
-});
-
-//creating a model for the object based off the schema that will give us access to mongoose methods
-var Campground = mongoose.model("Campground", campgroundSchema);
-
+//ROUTES
 app.get("/", function(req, res){
 res.redirect("/campgrounds");
 });
@@ -61,7 +55,7 @@ app.get("/campgrounds/new", function(req,res){
 //SHOW - display info for a specific campground
 app.get("/campgrounds/:id", function(req, res){
     var id = req.params.id;
-    Campground.findById(id, function(err, campground){
+    Campground.findById(id).populate("comments").exec(function(err, campground){
         if(err){
             console.log(err)
         }else{

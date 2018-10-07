@@ -29,3 +29,8 @@ hey: flex;
 .newCampFormInput{
     margin-bottom: 2%;
 }
+
+.showCampground{
+	width:40vh;
+	border: black solid 1px;
+}
