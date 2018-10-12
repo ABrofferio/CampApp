@@ -1,13 +1,32 @@
 <% include partials/header %>
+<div class="container">
 <h1>See what visitors of <%=campground.campgroundName%> have to say.</h1>
 <div class="showCampground">
 <img src="<%=campground.campgroundImage%>">
 </div>
 <p><%=campground.campgroundDescription%></p>
+<h4>What visitors have to say</h4>
 <% for(i=0;i<campground.comments.length;i++){ %>
-	<p><%=campground.comments[i].author%>: <%=campground.comments[i].text%></p>
-
-
+	<p class="userComment"><i class="material-icons">
+	account_circle
+	</i><%=campground.comments[i].author%>: <%=campground.comments[i].text%>
+	</p>
 <% } %>
-
+<p class="userComment"><i class="material-icons addComment">add_circle</i> Add a comment...</p>
+<div class="callNewComment"></div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function () {
+	$(".addComment").on("click", function(e){
+		$.ajax({
+		url: "/campgrounds/<%=campground._id%>/comments/new",
+		success: function(result) {
+			console.log("chicken"+result)
+			$(".callNewComment").html(result);
+		}
+});
+	})
+});	
+</script>
 <% include partials/footer %>

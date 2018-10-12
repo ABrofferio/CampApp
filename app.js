@@ -3,6 +3,7 @@ var express = require("express"),
 	bodyParser 	= require("body-parser"),
 	mongoose 	= require("mongoose"),
 	Campground 	= require("./models/campground"), //creating the schema and importing the model
+	Comment		=require("./models/comment"),
 	seedDB  	=require("./seed");
 
 seedDB();
@@ -62,6 +63,29 @@ app.get("/campgrounds/:id", function(req, res){
             res.render("show",{campground: campground})
         }
     })
+});
+
+//Nested NEW - show form to create new comment
+app.get("/campgrounds/:id/comments/new", function(req,res){
+	res.send('<div><form action="/campgrounds/'+req.params.id+'/comments" method="POST"><input type="text" class="form-control" name="comment[author]" placeholder="Enter your name"><input type="text" class="form-control newCampFormInput" name="comment[text]" placeholder="Enter your comment"><input type="submit" class="btn btn-dark btn-block newCampFormInput"></form></div>');
+i});
+
+//Nested CREATE -submit create form to create new comment
+app.post("/campgrounds/:id/comments", function(req,res){
+	Comment.create(req.body.comment, function(err, newComment){
+		if(err){
+			console.log(err)
+		}else{ 
+			Campground.update({_id:req.params.id},
+			{$push:{comments:{$each:[newComment]}}}, function(err, updatedCamp){
+				if(err){
+					console.log(err)
+				}else{
+					res.redirect("/campgrounds/:id")	
+				}		
+			})	
+		}
+	})
 });
 
 app.listen(3000, function(){

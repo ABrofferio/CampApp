@@ -34,3 +34,8 @@ hey: flex;
 	width:40vh;
 	border: black solid 1px;
 }
+
+.userComment{
+	display: flex;
+ 	align-items: center;
+}
