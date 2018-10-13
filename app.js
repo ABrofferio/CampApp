@@ -81,7 +81,7 @@ app.post("/campgrounds/:id/comments", function(req,res){
 				if(err){
 					console.log(err)
 				}else{
-					res.redirect("/campgrounds/:id")	
+					res.redirect("/campgrounds/"+req.params.id)	
 				}		
 			})	
 		}

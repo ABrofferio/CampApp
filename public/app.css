@@ -39,3 +39,18 @@ hey: flex;
 	display: flex;
  	align-items: center;
 }
+
+.campThumbnail{
+	border: 1px solid #ddd;
+	margin-bottom: 5%;
+	padding: 0px;
+}
+
+.campImage{
+	margin:0px;
+}
+
+
+.campCaption{
+	padding: 4%;
+}
