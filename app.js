@@ -30,6 +30,7 @@ app.use(expressSession({
 //responsible for taking data from the session and decoding it and then recoding it
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+passport.use(new LocalStrategy(User.authenticate()));
 
 seedDB();
 
@@ -41,15 +42,16 @@ app.get("/", function(req, res){
 res.redirect("/campgrounds");
 });
 
-app.get("/secret", function(req, res){
+app.get("/secret", isLoggedIn, function(req, res){
 res.render("Secret");
 });
 
+//-----------------
 //AUTH ROUTES
+//-----------------
 app.get("/signup", function(req, res){
-res.render("signup");
+	res.render("signup");
 });
-
 app.post("/signup", function(req, res){
 	//create user without password and then takes password as argument as hashes it to save to db
 	User.register(new User({username: req.body.username}), req.body.password, function(err, user){
@@ -64,6 +66,27 @@ app.post("/signup", function(req, res){
 		}
 	});
 });
+
+app.get("/login", function(req, res){
+	res.render("login");
+});
+/*middleware is code that runs before final callback which is what is happening with our passport.authenticate()*/
+app.post("/login", passport.authenticate("local", {
+	successRedirect: "/secret",
+	failureRedirect: "/login"
+}), function(req, res){
+});
+
+app.get("/logout", function(req, res){
+	/*passport destroying the user data in session (no longer keeping track of user data in session from request to request*/
+	req.session.destroy();
+	res.redirect("/");
+});
+
+//----------------
+//RESTful CRUD ROUTES
+//----------------
+
 //INDEX - show all campgrounds
 app.get("/campgrounds", function(req, res){
 //get campgrounds out of db to display
@@ -109,6 +132,10 @@ app.get("/campgrounds/:id", function(req, res){
     })
 });
 
+//-----------------
+//RESTful NESTED CRUD ROUTES
+//-----------------
+
 //Nested NEW - show form to create new comment
 app.get("/campgrounds/:id/comments/new", function(req,res){
 	res.send('<div><form action="/campgrounds/'+req.params.id+'/comments" method="POST"><input type="text" class="form-control" name="comment[author]" placeholder="Enter your name"><input type="text" class="form-control newCampFormInput" name="comment[text]" placeholder="Enter your comment"><input type="submit" class="btn btn-dark btn-block newCampFormInput"></form></div>');
@@ -131,6 +158,16 @@ app.post("/campgrounds/:id/comments", function(req,res){
 		}
 	})
 });
+
+//middleware for checking if a user is logged in or not
+function isLoggedIn(req, res, next){
+	if(req.session.passport && req.session.passport.user !== undefined){
+		return next();
+	}
+	res.redirect("/login");
+}
+
+
 
 app.listen(3000, function(){
 console.log("The Server is up and running")});
