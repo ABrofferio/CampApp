@@ -17,6 +17,8 @@ mongoose.connect("mongodb://localhost/camp_app", { useNewUrlParser: true });
 app.use(express.static(__dirname+"/public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+
+//PASSSPORT CONFIGURATION
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -137,12 +139,12 @@ app.get("/campgrounds/:id", function(req, res){
 //-----------------
 
 //Nested NEW - show form to create new comment
-app.get("/campgrounds/:id/comments/new", function(req,res){
+app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req,res){
 	res.send('<div><form action="/campgrounds/'+req.params.id+'/comments" method="POST"><input type="text" class="form-control" name="comment[author]" placeholder="Enter your name"><input type="text" class="form-control newCampFormInput" name="comment[text]" placeholder="Enter your comment"><input type="submit" class="btn btn-dark btn-block newCampFormInput"></form></div>');
-i});
+});
 
 //Nested CREATE -submit create form to create new comment
-app.post("/campgrounds/:id/comments", function(req,res){
+app.post("/campgrounds/:id/comments", isLoggedIn, function(req,res){
 	Comment.create(req.body.comment, function(err, newComment){
 		if(err){
 			console.log(err)
@@ -159,7 +161,7 @@ app.post("/campgrounds/:id/comments", function(req,res){
 	})
 });
 
-//middleware for checking if a user is logged in or not
+//middleware for checking if a user is logged in or not (always takes 3 params: req, res, next)
 function isLoggedIn(req, res, next){
 	if(req.session.passport && req.session.passport.user !== undefined){
 		return next();

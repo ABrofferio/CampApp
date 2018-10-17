@@ -38,8 +38,14 @@ $(document).ready(function () {
 		$.ajax({
 		url: "/campgrounds/<%=campground._id%>/comments/new",
 		success: function(result) {
-			console.log("chicken"+result)
+			console.log(result[1]);
+			console.log(result.length);
+			console.log(result);
+			if(result[1]=="d"){
 			$(".callNewComment").html(result);
+			}else{
+			window.location.replace("/login")
+			}
 		}
 });
 	})
