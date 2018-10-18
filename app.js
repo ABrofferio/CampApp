@@ -21,18 +21,28 @@ app.set("view engine", "ejs");
 //PASSSPORT CONFIGURATION
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(expressSession({
 	//used to encode and decode sessions
 	secret:"I like cheese a lot",
 	resave: false,
 	saveUninitialized: false
 }));
-
 //responsible for taking data from the session and decoding it and then recoding it
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 passport.use(new LocalStrategy(User.authenticate()));
+
+/*middleware that will run for every route (whatever is put in res.locals is avalable in all our templates)*/
+app.use(function(req, res, next){
+//whatever is put in res.locals is available in our templates
+	res.locals.currentUser = req.session.user;
+	//req.session.user will return undefined even after authentication so below is workaround
+	if(req.session.passport && req.session.passport.user !== undefined){
+                res.locals.currentUser = req.session.passport.user;
+        }
+	//allow us to move on to next middleware, which will be route handler in most cases
+	next();
+});
 
 seedDB();
 
@@ -45,6 +55,9 @@ res.redirect("/campgrounds");
 });
 
 app.get("/secret", isLoggedIn, function(req, res){
+console.log("req.user",req.user);
+console.log("req.session.user", req.session.user)
+console.log("req.session.passport.user",req.session.passport.user);
 res.render("Secret");
 });
 
@@ -74,7 +87,7 @@ app.get("/login", function(req, res){
 });
 /*middleware is code that runs before final callback which is what is happening with our passport.authenticate()*/
 app.post("/login", passport.authenticate("local", {
-	successRedirect: "/secret",
+	successRedirect: "/campgrounds",
 	failureRedirect: "/login"
 }), function(req, res){
 });
@@ -91,6 +104,7 @@ app.get("/logout", function(req, res){
 
 //INDEX - show all campgrounds
 app.get("/campgrounds", function(req, res){
+console.log(req.user);
 //get campgrounds out of db to display
     Campground.find({}, function(err, campgrounds){
         if(err){
