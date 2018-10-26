@@ -5,25 +5,48 @@ var	express		= require("express"),
 
 //Nested NEW - show form to create new comment
 router.get("/campgrounds/:id/comments/new", isLoggedIn, function(req,res){
-	res.send('<div><form action="/campgrounds/'+req.params.id+'/comments" method="POST"><input type="text" class="form-control" name="comment[author]" placeholder="Enter your name"><input type="text" class="form-control newCampFormInput" name="comment[text]" placeholder="Enter your comment"><input type="submit" class="btn btn-dark btn-block newCampFormInput"></form></div>');
+	res.send('<div><form action="/campgrounds/'+req.params.id+'/comments" method="POST"><input type="text" class="form-control newCampFormInput" name="comment[text]" placeholder="Enter your comment"><input type="submit" class="btn btn-dark btn-block newCampFormInput"></form></div>');
 });
 
 //Nested CREATE -submit create form to create new comment
 router.post("/campgrounds/:id/comments", isLoggedIn, function(req,res){
-	Comment.create(req.body.comment, function(err, newComment){
+	Campground.findById(req.params.id, function(err, campground){
 		if(err){
-			console.log(err)
-		}else{ 
-			Campground.update({_id:req.params.id},
-			{$push:{comments:{$each:[newComment]}}}, function(err, updatedCamp){
+			console.log(err);
+		}else{
+			Comment.create(req.body.comment, function(err, newComment){
 				if(err){
 					console.log(err)
 				}else{
-					res.redirect("/campgrounds/"+req.params.id)	
-				}		
-			})	
+					newComment.author.id = req.session.passport.user._id;
+					newComment.author.username = req.session.passport.user.username;
+					newComment.save();
+					campground.comments.push(newComment);
+					campground.save();
+					console.log("new comment:user:", req.session.passport.user.username);
+					console.log("new comment:user id:", req.session.passport.user._id);
+					res.redirect("/campgrounds/"+req.params.id);
 		}
 	})
+}
+})
+	// Comment.create(req.body.comment, function(err, newComment){
+	// 	if(err){
+	// 		console.log(err)
+	// 	}else{
+	// 		newComment.author.id = req.session.passport.user._id;
+	// 		newComment.author.username = req.session.passport.user.username;
+	// 		newComment.save();
+	// 		Campground.update({_id:req.params.id},
+	// 		{$push:{comments:{$each:[newComment]}}}, function(err, updatedCamp){
+	// 			if(err){
+	// 				console.log(err)
+	// 			}else{
+	// 				res.redirect("/campgrounds/"+req.params.id)
+	// 			}
+	// 		})
+	// 	}
+	// })
 });
 
 

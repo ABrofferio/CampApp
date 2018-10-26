@@ -10,7 +10,7 @@ var 	express			= require("express"),
 	passportLocalMongoose	= require("passport-local-mongoose"),
 	User			= require("./models/user"),
 	expressSession		= require("express-session");
-	
+
 var	campgroundRoutes	= require("./routes/campgrounds"),
 	commentRoutes		= require("./routes/comments"),
 	indexRoutes		= require("./routes/index");
@@ -32,8 +32,14 @@ app.use(expressSession({
 	saveUninitialized: false
 }));
 //responsible for taking data from the session and decoding it and then recoding it
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+passport.deserializeUser(function(id, done) {
+	User.findById(id, function(err, user) {
+        done(err, user);
+	});
+});
 passport.use(new LocalStrategy(User.authenticate()));
 
 /*middleware that will run for every route (whatever is put in res.locals is avalable in all our templates)*/
@@ -42,7 +48,7 @@ app.use(function(req, res, next){
 	res.locals.currentUser = req.session.user;
 	//req.session.user will return undefined even after authentication so below is workaround
 	if(req.session.passport && req.session.passport.user !== undefined){
-                res.locals.currentUser = req.session.passport.user;
+                res.locals.currentUser = req.session.passport.user.username;
         }
 	//allow us to move on to next middleware, which will be route handler in most cases
 	next();
@@ -53,7 +59,7 @@ app.use(campgroundRoutes);
 app.use(commentRoutes);
 app.use(indexRoutes);
 
-seedDB();
+//seedDB();
 
 app.listen(3000, function(){
 console.log("The Server is up and running")});
