@@ -16,11 +16,13 @@ console.log(req.user);
 });
 
 //CREATE - add new campground to db
-router.post("/campgrounds", function(req,res){
+router.post("/campgrounds", isLoggedIn, function(req,res){
     var campName = req.body.campingSpotName;
     var campImage = req.body.campingSpotImage;
     var campDescription = req.body.campingSpotDescription;
-    var campSite = {campgroundName: campName, campgroundImage: campImage, campgroundDescription:campDescription}
+		var campuUserId= req.session.passport.user._id;
+		var campUserUsername = req.session.passport.user.username;
+    var campSite = {user:{id:campuUserId, username:campUserUsername},campgroundName: campName, campgroundImage: campImage, campgroundDescription:campDescription}
     Campground.create( campSite, function(err, campground)
         {
             if(err){
@@ -32,7 +34,7 @@ router.post("/campgrounds", function(req,res){
 });
 
 //NEW - show form to create new campground
-router.get("/campgrounds/new", function(req,res){
+router.get("/campgrounds/new", isLoggedIn, function(req,res){
     res.render("new");
 });
 

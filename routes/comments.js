@@ -23,8 +23,6 @@ router.post("/campgrounds/:id/comments", isLoggedIn, function(req,res){
 					newComment.save();
 					campground.comments.push(newComment);
 					campground.save();
-					console.log("new comment:user:", req.session.passport.user.username);
-					console.log("new comment:user id:", req.session.passport.user._id);
 					res.redirect("/campgrounds/"+req.params.id);
 		}
 	})
