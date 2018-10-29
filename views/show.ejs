@@ -14,7 +14,12 @@
 <img class="img-responsive campImage" src="<%=campground.campgroundImage%>">
 <div class="caption-full campCaption">
 <h4><%=campground.campgroundName%></h4>
+<div class="editCampName">
 <p>Posted by: <%=campground.user.username%></p>
+<% if(currentUser == campground.user.username){ %>
+	<a href="/campgrounds/<%=campground._id%>/edit"><i class="material-icons">edit</i></a>
+<% } %>
+</div>
 <p><%=campground.campgroundDescription%></p>
 </div>
 </div>

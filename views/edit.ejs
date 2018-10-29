@@ -1,0 +1,17 @@
+<% include partials/header %>
+<div class="container">
+<h2>Edit <%= campground.campgroundName %></h2>
+<div class="newCampForm">
+    <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST">
+        <input type="text" class="form-control newCampFormInput" name="newCampground[campgroundName]" placeholder="<%= campground.campgroundName %>">
+        <input type="text" class="form-control newCampFormInput" name="enewCampground[campgroundImage]" placeholder="<%= campground.campgroundImage %>">
+        <input type="text" class="form-control newCampFormInput" name="newCampground[campgroundDescription]" placeholder="<%= campground.campgroundDescription %>">
+        <input type="submit" class="btn btn-dark btn-block newCampFormInput">
+    </form>
+    <form action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
+        <button type="submit"><i class="material-icons">delete</i></button>
+    </form>
+    <a href="/campgrounds">Return to Campgrounds</a>
+</div>
+</div>
+<%include partials/footer %>

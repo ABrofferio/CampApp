@@ -17,6 +17,8 @@ console.log(req.user);
 
 //CREATE - add new campground to db
 router.post("/campgrounds", isLoggedIn, function(req,res){
+		req.body.campingSpotName = req.sanitize(req.body.campingSpotName);
+		req.body.campingSpotDescription = req.sanitize(req.body.campingSpotDescription);
     var campName = req.body.campingSpotName;
     var campImage = req.body.campingSpotImage;
     var campDescription = req.body.campingSpotDescription;
@@ -49,6 +51,42 @@ router.get("/campgrounds/:id", function(req, res){
         }
     })
 });
+
+//EDIT - Show form to edit campground
+router.get("/campgrounds/:id/edit", isLoggedIn, function(req, res){
+	Campground.findById(req.params.id, function(err, campground){
+		if(err){
+			console.log(err);
+		}else{
+			res.render("edit", {campground,campground});
+		}
+	})
+});
+
+//UPDATE - Update campground in the database
+router.put("/campgrounds/:id", isLoggedIn, function(req, res){
+	req.body.newCampground.campgroundName = req.sanitize(req.body.newCampground.campgroundName);
+	req.body.newCampground.campgroundDescription = req.sanitize(req.body.newCampground.campgroundDescription);
+	Campground.findOneAndUpdate({_id:req.params.id}, {$set:req.body.newCampground}, {new: true}, function(err, newCampground){
+		if(err){
+			console.log(err);
+		}else{
+			res.redirect("/campgrounds/"+req.params.id);
+		}
+	})
+});
+
+//DESTROY - Delete a campground in the database
+router.delete("/campgrounds/:id", isLoggedIn, function(req, res){
+	Campground.findOneAndDelete({_id:req.params.id}, function(err, deletedCampground){
+		if(err){
+			console.log(err);
+		}else{
+			res.redirect("/campgrounds/");
+		}
+	})
+});
+
 
 //middleware for checking if a user is logged in or not (always takes 3 params: req, res, next)
 function isLoggedIn(req, res, next){

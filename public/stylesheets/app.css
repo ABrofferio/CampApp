@@ -54,3 +54,18 @@ hey: flex;
 .campCaption{
 	padding: 4%;
 }
+
+.editCampName{
+  display: flex;
+  width: 100%;
+}
+
+.editCampName p{
+  float: left;
+  color: inherit;
+}
+
+.editCampName a{
+  float: right;
+  color: inherit;
+}

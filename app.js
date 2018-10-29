@@ -9,7 +9,9 @@ var 	express			= require("express"),
 	LocalStrategy		=require("passport-local"),
 	passportLocalMongoose	= require("passport-local-mongoose"),
 	User			= require("./models/user"),
-	expressSession		= require("express-session");
+	expressSession		= require("express-session"),
+	expressSanitizer = require("express-sanitizer"),
+	methodOverride = require("method-override");
 
 var	campgroundRoutes	= require("./routes/campgrounds"),
 	commentRoutes		= require("./routes/comments"),
@@ -21,6 +23,8 @@ mongoose.connect("mongodb://localhost/camp_app", { useNewUrlParser: true });
 app.use(express.static(__dirname+"/public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(expressSanitizer());
+app.use(methodOverride("_method"));
 
 //PASSSPORT CONFIGURATION
 app.use(passport.initialize());
