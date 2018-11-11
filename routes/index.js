@@ -8,9 +8,6 @@ res.redirect("/campgrounds");
 });
 
 router.get("/secret", isLoggedIn, function(req, res){
-console.log("req.user",req.user);
-console.log("req.session.user", req.session.user)
-console.log("req.session.passport.user",req.session.passport.user);
 res.render("Secret");
 });
 

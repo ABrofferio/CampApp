@@ -2,6 +2,7 @@ var	express		= require("express"),
 	router		= express.Router(),
 	Campground	= require("../models/campground");
 
+
 //INDEX - show all campgrounds
 router.get("/campgrounds", function(req, res){
 console.log(req.user);
@@ -53,7 +54,7 @@ router.get("/campgrounds/:id", function(req, res){
 });
 
 //EDIT - Show form to edit campground
-router.get("/campgrounds/:id/edit", isLoggedIn, function(req, res){
+router.get("/campgrounds/:id/edit", checkCampgroundCreator, function(req, res){
 	Campground.findById(req.params.id, function(err, campground){
 		if(err){
 			console.log(err);
@@ -64,7 +65,7 @@ router.get("/campgrounds/:id/edit", isLoggedIn, function(req, res){
 });
 
 //UPDATE - Update campground in the database
-router.put("/campgrounds/:id", isLoggedIn, function(req, res){
+router.put("/campgrounds/:id", checkCampgroundCreator, function(req, res){
 	req.body.newCampground.campgroundName = req.sanitize(req.body.newCampground.campgroundName);
 	req.body.newCampground.campgroundDescription = req.sanitize(req.body.newCampground.campgroundDescription);
 	Campground.findOneAndUpdate({_id:req.params.id}, {$set:req.body.newCampground}, {new: true}, function(err, newCampground){
@@ -77,7 +78,7 @@ router.put("/campgrounds/:id", isLoggedIn, function(req, res){
 });
 
 //DESTROY - Delete a campground in the database
-router.delete("/campgrounds/:id", isLoggedIn, function(req, res){
+router.delete("/campgrounds/:id", checkCampgroundCreator, function(req, res){
 	Campground.findOneAndDelete({_id:req.params.id}, function(err, deletedCampground){
 		if(err){
 			console.log(err);
@@ -94,6 +95,26 @@ function isLoggedIn(req, res, next){
                 return next();
         }
         res.redirect("/login");
+}
+
+//middleware for checking if the user logged in is the user who created campground
+function checkCampgroundCreator(req, res, next){
+        if(req.session.passport && req.session.passport.user !== undefined){
+                Campground.findById(req.params.id, function(err, campground){
+									if(err){
+										res.redirect("back");
+									}else{
+										if(campground.user.id.equals(req.session.passport.user._id)){
+											next();
+										}else{
+											return res.redirect("back")
+										}
+									}
+								})
+        }else{
+					res.redirect("back");
+				}
+
 }
 
 module.exports = router;

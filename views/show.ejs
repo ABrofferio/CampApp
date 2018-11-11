@@ -3,11 +3,6 @@
 <h1>See what visitors of <%=campground.campgroundName%> have to say.</h1>
 <div class="row">
 <div class="col-md-3">
-<ul>
-<li></li>
-<li></li>
-<li></li>
-</ul>
 </div>
 <div class="col-md-9">
 <div class="thumbnail campThumbnail">
@@ -17,7 +12,12 @@
 <div class="editCampName">
 <p>Posted by: <%=campground.user.username%></p>
 <% if(currentUser == campground.user.username){ %>
-	<a href="/campgrounds/<%=campground._id%>/edit"><i class="material-icons">edit</i></a>
+	<div class="editCampDeets">
+	<a class="editButton" href="/campgrounds/<%=campground._id%>/edit"><i class="material-icons">edit</i></a>
+	<form action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
+			<button class="trashButton noBtnDefaults" type="submit"><i class="material-icons">delete</i></button>
+	</form>
+</div>
 <% } %>
 </div>
 <p><%=campground.campgroundDescription%></p>

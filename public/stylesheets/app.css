@@ -56,16 +56,25 @@ hey: flex;
 }
 
 .editCampName{
+  display:flex;
+  justify-content:space-between;
+}
+
+.noBtnDefaults{
+  background:none;
+  border:none;
+  padding:0;
+}
+
+.editCampDeets{
   display: flex;
-  width: 100%;
 }
-
-.editCampName p{
-  float: left;
-  color: inherit;
-}
-
-.editCampName a{
+.trashButton{
   float: right;
-  color: inherit;
+  color: #212529;
+}
+
+.editButton{
+  float: right;
+  color: #212529;
 }
